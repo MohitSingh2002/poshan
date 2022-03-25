@@ -22,9 +22,6 @@ class _StateHomeScreenState extends State<StateHomeScreen> {
   void initState() {
     super.initState();
     getStateNameFromPrefs();
-    FirebaseFirestore.instance.collection('states').doc('Rajasthan').collection('districts').doc('Jaipur').collection('school').doc('Vivekanand School').collection('attendance').doc('25032022').get().then((value) {
-      print('attendance : ${DayAttendance.fromJson(value.data() as Map<String, dynamic>)}');
-    });
   }
 
   void getStateNameFromPrefs() {

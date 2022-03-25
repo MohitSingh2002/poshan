@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:poshan/constants/constant_colors.dart';
+import 'package:poshan/screens/admin_school_home_screen.dart';
 import 'package:poshan/services/firebase_service.dart';
 import 'package:poshan/services/prefs_helper.dart';
 
@@ -111,7 +112,9 @@ class _DistrictHomeScreenState extends State<DistrictHomeScreen> {
                               String schoolName = schoolsList.elementAt(index);
                               return Card(
                                 child: ListTile(
-                                  onTap: () {},
+                                  onTap: () {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => AdminSchoolHomeScreen(schoolName: schoolName,)));
+                                  },
                                   title: Text(
                                     schoolName,
                                   ),

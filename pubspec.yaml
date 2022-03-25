@@ -43,6 +43,8 @@ dependencies:
   flutter_datetime_picker: ^1.5.1
   date_picker_timeline: ^1.2.3
   cloud_firestore: ^3.1.10
+  syncfusion_flutter_charts: ^19.4.56
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

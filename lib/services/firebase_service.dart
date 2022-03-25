@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:poshan/models/day_attendance.dart';
 
 class FirebaseService {
   
@@ -32,6 +33,19 @@ class FirebaseService {
       schools.add(element.get('name'));
     });
     return schools;
+  }
+
+  Future<List<DayAttendance>> getDayAttendance(String stateName, String districtName, String schoolName) async {
+    var response = await FirebaseFirestore.instance.collection('states').doc(stateName).collection('districts').doc(districtName).collection('school').doc(schoolName).collection('attendance').get();
+    List<DayAttendance> dayAttendanceList = [];
+    if (response.docs.isEmpty) {
+      return dayAttendanceList;
+    } else {
+      response.docs.forEach((element) {
+        dayAttendanceList.add(DayAttendance.fromJson(element.data(), element.id));
+      });
+      return dayAttendanceList;
+    }
   }
   
 }
