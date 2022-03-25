@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:poshan/constants/constant_colors.dart';
 import 'package:poshan/models/food_details.dart';
 import 'package:poshan/providers/food_details_provider.dart';
 import 'package:poshan/screens/add_food_screen.dart';
+import 'package:poshan/services/prefs_helper.dart';
 import 'package:poshan/widgets/circular_step_progress_indicator.dart';
+import 'package:poshan/widgets/custom_button.dart';
 import 'package:provider/provider.dart';
 
 class NutritionScreen extends StatefulWidget {
@@ -15,6 +18,26 @@ class NutritionScreen extends StatefulWidget {
 }
 
 class _NutritionScreenState extends State<NutritionScreen> {
+
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      isLoading = true;
+    });
+    PrefsHelper().getParsedList().then((value) {
+      value.forEach((element) {
+        print('parsedElement : ${element.toString()}');
+        Provider.of<FoodDetailsProvider>(context, listen: false).setFoodDetails(element);
+      });
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -102,38 +125,83 @@ class _NutritionScreenState extends State<NutritionScreen> {
                         .elementAt(index);
                     return Card(
                       elevation: 3.0,
-                      child: ListTile(
-                        title: Text(
-                          '${parsed.food.label}',
-                          style: TextStyle(
-                            color: ConstantColors.BLACK,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        subtitle: Text(
-                          'Protein: ${parsed.food.nutrients.procnt}g',
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              '${parsed.food.nutrients.enercKcal} Cal',
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            title: Text(
+                              '${parsed.food.label}',
                               style: TextStyle(
                                 color: ConstantColors.BLACK,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.cancel,
-                                color: ConstantColors.RED,
-                              ),
+                            subtitle: Text(
+                              'Protein: ${parsed.food.nutrients.procnt}g',
                             ),
-                          ],
-                        ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  '${parsed.food.nutrients.enercKcal} Cal',
+                                  style: TextStyle(
+                                    color: ConstantColors.BLACK,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    PrefsHelper().removeParsedFromList(index);
+                                    Provider.of<FoodDetailsProvider>(context, listen: false).removeFoodDetailsAt(index);
+                                  },
+                                  icon: Icon(
+                                    Icons.cancel,
+                                    color: ConstantColors.RED,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              primary: ConstantColors.WHITE,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                FaIcon(FontAwesomeIcons.camera, color: ConstantColors.BLACK,),
+                                SizedBox(
+                                  width: width / 30.0,
+                                ),
+                                Text(
+                                  'Capture Image',
+                                  style: TextStyle(
+                                    color: ConstantColors.BLACK,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   },
+                ),
+                SizedBox(
+                  height: width / 20.0,
+                ),
+                context.watch<FoodDetailsProvider>().getFoodDetails().isEmpty ? Container() : Center(
+                  child: CustomButton(
+                    onTap: () {
+                      List<Parsed> parsedList = Provider.of<FoodDetailsProvider>(context, listen: false).getFoodDetails();
+                      PrefsHelper().saveParsedList(parsedList);
+                      for (Parsed parsed in parsedList) {
+                        FirebaseFirestore.instance.collection('foodDetails').add(parsed.toJson());
+                      }
+                    },
+                    text: 'SUBMIT',
+                  ),
                 ),
               ],
             ),

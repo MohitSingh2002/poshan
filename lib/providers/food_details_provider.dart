@@ -11,6 +11,11 @@ class FoodDetailsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeFoodDetailsAt(int index) {
+    _foodDetails.removeAt(index);
+    notifyListeners();
+  }
+
   List<Parsed> getFoodDetails() {
     return _foodDetails;
   }
