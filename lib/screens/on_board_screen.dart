@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:poshan/constants/constant_colors.dart';
+import 'package:poshan/screens/admin_login_screen.dart';
 import 'package:poshan/screens/school_home_screen.dart';
 import 'package:poshan/screens/school_login_screen.dart';
 import 'package:poshan/widgets/custom_button.dart';
@@ -25,7 +27,10 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
             children: [
               CustomButton(
                 text: 'Admin',
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const AdminLoginScreen()));
+                },
               ),
               SizedBox(
                 height: width / 30.0,
@@ -33,7 +38,14 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
               CustomButton(
                 text: 'School',
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => SchoolHomeScreen()));
+                  User? user = FirebaseAuth.instance.currentUser;
+                  if (user == null) {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const SchoolLoginScreen()));
+                  } else {
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => const SchoolHomeScreen()));
+                  }
                 },
               ),
             ],

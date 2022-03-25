@@ -24,10 +24,10 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ConstantColors.WHITE,
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: ConstantColors.BLACK,
         ),
-        title: Text(
+        title: const Text(
           'Add Meal',
           style: TextStyle(
             color: ConstantColors.BLACK,
@@ -64,31 +64,31 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                       });
                     }
                   },
-                  decoration: new InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Search Food',
-                    hintStyle: TextStyle(
+                    hintStyle: const TextStyle(
                       color: ConstantColors.GREY,
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                         color: ConstantColors.BLACK,
                       ),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                         color: ConstantColors.BLACK,
                       ),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     errorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                         color: ConstantColors.RED,
                       ),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     focusedErrorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                         color: ConstantColors.RED,
                       ),
                       borderRadius: BorderRadius.circular(10.0),
@@ -101,7 +101,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                 foodDetails == null
                     ? Container()
                     : isLoading
-                        ? Center(
+                        ? const Center(
                             child: CircularProgressIndicator(
                               color: ConstantColors.RED,
                             ),
@@ -118,7 +118,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                                 child: ListTile(
                                   title: Text(
                                     '${parsed.food.label}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: ConstantColors.BLACK,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -131,7 +131,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                                     children: [
                                       Text(
                                         '${parsed.food.nutrients.enercKcal} Cal',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: ConstantColors.BLACK,
                                         ),
                                       ),
@@ -142,7 +142,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                                                   listen: false)
                                               .setFoodDetails(parsed);
                                         },
-                                        icon: Icon(
+                                        icon: const Icon(
                                           Icons.add,
                                           color: ConstantColors.RED,
                                         ),

@@ -17,20 +17,6 @@ class _SchoolHomeScreenState extends State<SchoolHomeScreen> {
   DateTime? _selectedDate;
 
   @override
-  void initState() {
-    super.initState();
-    // checkIfUserLoggedIn();
-  }
-
-  void checkIfUserLoggedIn() {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => SchoolLoginScreen()));
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
@@ -38,7 +24,7 @@ class _SchoolHomeScreenState extends State<SchoolHomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ConstantColors.WHITE,
-        title: Text(
+        title: const Text(
           'Today',
           style: TextStyle(
             color: ConstantColors.BLACK,
@@ -47,7 +33,7 @@ class _SchoolHomeScreenState extends State<SchoolHomeScreen> {
         actions: [
           TextButton(
             onPressed: () {},
-            child: Text('Day-1'),
+            child: const Text('Day-1'),
           ),
         ],
       ),

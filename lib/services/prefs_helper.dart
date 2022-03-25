@@ -43,4 +43,26 @@ class PrefsHelper {
     saveParsedList(parsedList);
   }
 
+  void saveStateName(String stateName) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString('stateName', stateName);
+  }
+
+  Future<String> getStateName() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? stateName = await preferences.getString('stateName');
+    return stateName == null ? '' : stateName;
+  }
+
+  void saveDistrictName(String districtName) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString('districtName', districtName);
+  }
+
+  Future<String> getDistrictName() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? districtName = await preferences.getString('districtName');
+    return districtName == null ? '' : districtName;
+  }
+
 }

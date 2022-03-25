@@ -25,10 +25,10 @@ class MyApp extends StatelessWidget {
     providers: [
       ChangeNotifierProvider(create: (context) => FoodDetailsProvider()),
     ],
-    child: MaterialApp(
+    child: const MaterialApp(
       debugShowCheckedModeBanner: false,
-      // home: AuthHandler(),
-      home: SchoolHomeScreen(),
+      home: AuthHandler(),
+      // home: SchoolHomeScreen(),
     ),
   );
 }
