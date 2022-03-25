@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:poshan/constants/constant_colors.dart';
 import 'package:poshan/models/food_details.dart';
+import 'package:poshan/providers/food_details_provider.dart';
 import 'package:poshan/services/api_service.dart';
+import 'package:provider/provider.dart';
 
 class AddFoodScreen extends StatefulWidget {
   const AddFoodScreen({Key? key}) : super(key: key);
@@ -98,39 +100,59 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                 ),
                 foodDetails == null
                     ? Container()
-                    : isLoading ? Center(
-                  child: CircularProgressIndicator(
-                    color: ConstantColors.RED,
-                  ),
-                ) : ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: foodDetails!.parsed.length,
-                  itemBuilder: (_, index) {
-                    Parsed parsed = foodDetails!.parsed.elementAt(index);
-                    return Card(
-                      elevation: 3.0,
-                      child: ListTile(
-                        title: Text(
-                          '${parsed.food.label}',
-                          style: TextStyle(
-                            color: ConstantColors.BLACK,
-                            fontWeight: FontWeight.bold,
+                    : isLoading
+                        ? Center(
+                            child: CircularProgressIndicator(
+                              color: ConstantColors.RED,
+                            ),
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: foodDetails!.parsed.length,
+                            itemBuilder: (_, index) {
+                              Parsed parsed =
+                                  foodDetails!.parsed.elementAt(index);
+                              return Card(
+                                elevation: 3.0,
+                                child: ListTile(
+                                  title: Text(
+                                    '${parsed.food.label}',
+                                    style: TextStyle(
+                                      color: ConstantColors.BLACK,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    'Protein: ${parsed.food.nutrients.procnt}g',
+                                  ),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        '${parsed.food.nutrients.enercKcal} Cal',
+                                        style: TextStyle(
+                                          color: ConstantColors.BLACK,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        onPressed: () {
+                                          Provider.of<FoodDetailsProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .setFoodDetails(parsed);
+                                        },
+                                        icon: Icon(
+                                          Icons.add,
+                                          color: ConstantColors.RED,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        ),
-                        subtitle: Text(
-                          'Protein: ${parsed.food.nutrients.procnt}g',
-                        ),
-                        trailing: Text(
-                          '${parsed.food.nutrients.enercKcal} Cal',
-                          style: TextStyle(
-                            color: ConstantColors.BLACK,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
               ],
             ),
           ),

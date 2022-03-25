@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:poshan/handlers/auth_handler.dart';
+import 'package:poshan/providers/food_details_provider.dart';
 import 'package:poshan/screens/school_home_screen.dart';
 import 'package:poshan/services/api_service.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,11 +21,14 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context) => MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => FoodDetailsProvider()),
+    ],
+    child: MaterialApp(
       debugShowCheckedModeBanner: false,
       // home: AuthHandler(),
       home: SchoolHomeScreen(),
-    );
-  }
+    ),
+  );
 }
