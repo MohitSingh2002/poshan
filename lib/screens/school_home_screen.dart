@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:poshan/constants/constant_colors.dart';
 import 'package:poshan/handlers/auth_handler.dart';
 import 'package:poshan/models/teacher.dart';
+import 'package:poshan/screens/manage_attendance_screen.dart';
 import 'package:poshan/screens/nutrition_screen.dart';
 import 'package:poshan/screens/school_login_screen.dart';
 import 'package:poshan/services/prefs_helper.dart';
@@ -153,6 +154,9 @@ class _SchoolHomeScreenState extends State<SchoolHomeScreen> {
               Card(
                 elevation: 3.0,
                 child: ListTile(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageAttendanceScreen()));
+                  },
                   leading: Icon(
                     Icons.person,
                     size: width / 10.0,
