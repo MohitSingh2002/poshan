@@ -4,8 +4,9 @@ import 'package:poshan/constants/constant_colors.dart';
 class CustomButton extends StatelessWidget {
   String text;
   dynamic Function()? onTap;
+  double fontSize;
 
-  CustomButton({required this.text, required this.onTap});
+  CustomButton({required this.text, required this.onTap, this.fontSize = 25.0});
 
   @override
   Widget build(BuildContext context) {
@@ -16,18 +17,19 @@ class CustomButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(
-          vertical: width / 50.0,
-          horizontal: width / 20.0,
+          vertical: width / 40.0,
+          horizontal: width / 6.0,
         ),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(
-              width / 20.0,
+              width / 30.0,
             ),
             border: Border.all(color: ConstantColors.BLACK)),
         child: Text(
-          '${text}',
+          text,
           style: TextStyle(
             color: ConstantColors.BLACK,
+            fontSize: fontSize,
           ),
         ),
       ),

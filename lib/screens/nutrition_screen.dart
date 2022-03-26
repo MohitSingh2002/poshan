@@ -89,9 +89,9 @@ class _NutritionScreenState extends State<NutritionScreen> {
                         child: Icon(Icons.food_bank),
                       ),
                     ),
-                    title: const Text(
-                      '200 of 700',
-                      style: TextStyle(
+                    title: Text(
+                      '${context.watch<FoodDetailsProvider>().getTotalCalories()} of 700',
+                      style: const TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
                       ),
@@ -196,7 +196,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                   },
                 ),
                 SizedBox(
-                  height: width / 20.0,
+                  height: width / 10.0,
                 ),
                 context.watch<FoodDetailsProvider>().getFoodDetails().isEmpty ? Container() : Center(
                   child: CustomButton(
@@ -217,6 +217,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                       Utils().showToast('Meals Saved Successfully');
                     },
                     text: 'SUBMIT',
+                    fontSize: 20.0,
                   ),
                 ),
               ],

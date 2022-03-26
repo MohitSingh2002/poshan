@@ -16,6 +16,14 @@ class FoodDetailsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  double getTotalCalories() {
+    double calorie = 0;
+    _foodDetails.forEach((element) {
+      calorie += element.food.nutrients.enercKcal;
+    });
+    return calorie;
+  }
+
   List<Parsed> getFoodDetails() {
     return _foodDetails;
   }

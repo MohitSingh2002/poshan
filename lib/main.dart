@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:poshan/constants/constant_colors.dart';
 import 'package:poshan/handlers/auth_handler.dart';
 import 'package:poshan/providers/food_details_provider.dart';
 import 'package:poshan/screens/school_home_screen.dart';
@@ -25,9 +26,14 @@ class MyApp extends StatelessWidget {
     providers: [
       ChangeNotifierProvider(create: (context) => FoodDetailsProvider()),
     ],
-    child: const MaterialApp(
+    child: MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: AuthHandler(),
+      theme: ThemeData(
+        appBarTheme: const AppBarTheme(
+          color: ConstantColors.RED,
+        ),
+      ),
+      home: const AuthHandler(),
       // home: SchoolHomeScreen(),
     ),
   );

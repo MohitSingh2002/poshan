@@ -7,6 +7,7 @@ import 'package:poshan/screens/state_home_screen.dart';
 import 'package:poshan/services/firebase_service.dart';
 import 'package:poshan/services/prefs_helper.dart';
 import 'package:poshan/widgets/custom_drop_down.dart';
+import 'package:poshan/widgets/custom_text.dart';
 import 'package:poshan/widgets/custom_text_field.dart';
 
 class AdminLoginScreen extends StatefulWidget {
@@ -43,10 +44,16 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                CustomText(text: 'Login', isRequired: false, fontSize: 30,),
+                SizedBox(
+                  height: width / 10.0,
+                ),
+                CustomText(text: 'Select User', isRequired: false),
                 CustomDropDown(
                   value: userName,
-                  labelText: 'Select User',
+                  labelText: '',
                   borderColor: ConstantColors.BLACK,
                   items: const ['Central', 'State', 'District',],
                   onChanged: (value) {
@@ -59,9 +66,10 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                 SizedBox(
                   height: width / 30.0,
                 ),
+                CustomText(text: 'Pin', isRequired: false),
                 AuthTextField(
                   controller: passwordController,
-                  hintText: 'Pin',
+                  hintText: '',
                   keyboardType: TextInputType.text,
                   obscureText: isPasswordShown,
                   suffixIcon: Padding(
@@ -86,31 +94,36 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                 SizedBox(
                   height: width / 10.0,
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    FirebaseService().isAdminExist(userName, passwordController.text.toString()).then((value) {
-                      if (value) {
-                        if (userName == 'Central') {
-                          PrefsHelper().saveAuthCode(1);
-                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const CentralHomeScreen()), (Route<dynamic> route) => false);
-                        } else if (userName == 'State') {
-                          PrefsHelper().saveAuthCode(2);
-                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const StateHomeScreen()), (Route<dynamic> route) => false);
-                        } else {
-                          PrefsHelper().saveAuthCode(3);
-                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const DistrictHomeScreen()), (Route<dynamic> route) => false);
-                        }
-                      }
-                      setState(() {
-                        isLoading = false;
-                      });
-                    });
-                  },
-                  child: const Text(
-                    'LOGIN',
+                Center(
+                  child: Container(
+                    width: width,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        FirebaseService().isAdminExist(userName, passwordController.text.toString()).then((value) {
+                          if (value) {
+                            if (userName == 'Central') {
+                              PrefsHelper().saveAuthCode(1);
+                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const CentralHomeScreen()), (Route<dynamic> route) => false);
+                            } else if (userName == 'State') {
+                              PrefsHelper().saveAuthCode(2);
+                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const StateHomeScreen()), (Route<dynamic> route) => false);
+                            } else {
+                              PrefsHelper().saveAuthCode(3);
+                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const DistrictHomeScreen()), (Route<dynamic> route) => false);
+                            }
+                          }
+                          setState(() {
+                            isLoading = false;
+                          });
+                        });
+                      },
+                      child: const Text(
+                        'LOGIN',
+                      ),
+                    ),
                   ),
                 ),
               ],
