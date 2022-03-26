@@ -15,13 +15,14 @@ class FoodDayWise {
     name: json["name"],
     calorie: json["calorie"].toDouble(),
     protein: json["protein"].toDouble(),
-    imageFromApi: json["imageFromApi"],
+    imageFromApi: json["imageFromApi"] == null ? '' : json["imageFromApi"],
   );
 
   Map<String, dynamic> toJson() => {
     "name": name,
     "calorie": calorie,
     "protein": protein,
+    "imageFromApi": imageFromApi,
   };
 
   @override

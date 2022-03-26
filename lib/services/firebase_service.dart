@@ -65,5 +65,27 @@ class FirebaseService {
       'food': List<dynamic>.from(foodDayWiseList.map((x) => x.toJson())),
     }, SetOptions(merge: true));
   }
+
+  Future<Pair<List<List<FoodDayWise>>, List<String>>> getFoodDayWise(String stateName, String districtName, String schoolName) async {
+    var response = await FirebaseFirestore.instance.collection('states').doc(stateName).collection('districts').doc(districtName).collection('school').doc(schoolName).collection('meals').get();
+    List<List<FoodDayWise>> mainList = [];
+    List<String> docIds = [];
+    response.docs.forEach((element) {
+      Map<String, dynamic>? json = element.data();
+      List<FoodDayWise> list = List<FoodDayWise>.from(json["food"].map((x) => FoodDayWise.fromJson(x)));
+      mainList.add(list);
+    });
+    response.docs.forEach((element) {
+      docIds.add(element.id);
+    });
+    return Pair(mainList, docIds);
+  }
   
+}
+
+class Pair<T1, T2> {
+  final T1 a;
+  final T2 b;
+
+  Pair(this.a, this.b);
 }

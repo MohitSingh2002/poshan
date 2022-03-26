@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:poshan/constants/constant_colors.dart';
+import 'package:poshan/models/calorie_tracker.dart';
 import 'package:poshan/models/day_attendance.dart';
+import 'package:poshan/models/food_day_wise.dart';
 import 'package:poshan/services/firebase_service.dart';
 import 'package:poshan/services/prefs_helper.dart';
 import 'package:poshan/services/utils.dart';
@@ -124,6 +126,110 @@ class _AdminSchoolHomeScreenState extends State<AdminSchoolHomeScreen> {
                             dataSource: dayAttendanceList,
                             xValueMapper: (DayAttendance dayAttendance, _) => '${dayAttendance.docID.substring(0, 2)}/${dayAttendance.docID.substring(2, 4)}/${dayAttendance.docID.substring(4)}',
                             yValueMapper: (DayAttendance dayAttendance, _) => dayAttendance.getPercentageForGraph(),
+                            dataLabelSettings: DataLabelSettings(isVisible: true),
+                          )
+                        ],
+                      );
+                    }
+                  },
+                ),
+                FutureBuilder(
+                  future: FirebaseService().getFoodDayWise(stateName, districtName, widget.schoolName),
+                  builder: (_, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else {
+                      Pair<List<List<FoodDayWise>>, List<String>> data = snapshot.data as Pair<List<List<FoodDayWise>>, List<String>>;
+                      List<CalorieTracker> calorieTrackerList = [];
+                      for (int i = 0; i < data.a.length; i++) {
+                        double calorie = 0;
+                        double protein = 0;
+                        for (FoodDayWise foodDayWise in data.a.elementAt(i)) {
+                          calorie += foodDayWise.calorie;
+                          protein += foodDayWise.protein;
+                        }
+                        calorieTrackerList.add(CalorieTracker(calorie: calorie, protein: protein, date: data.b.elementAt(i)));
+                      }
+                      return SfCartesianChart(
+                        enableSideBySideSeriesPlacement: true,
+                        primaryXAxis: CategoryAxis(
+                          title: AxisTitle(
+                            text: 'Calorie',
+                            textStyle: const TextStyle(
+                              color: ConstantColors.BLACK,
+                            ),
+                          ),
+                        ),
+                        title: ChartTitle(
+                          text: 'Calorie Report',
+                          textStyle: const TextStyle(
+                            color: ConstantColors.BLACK,
+                          ),
+                        ),
+                        onDataLabelRender: (DataLabelRenderArgs args) {
+                          args.textStyle = const TextStyle(
+                            color: ConstantColors.BLACK,
+                          );
+                        },
+                        series: <LineSeries<CalorieTracker, String>>[
+                          LineSeries<CalorieTracker, String>(
+                            dataSource: calorieTrackerList,
+                            xValueMapper: (CalorieTracker calorieTracker, _) => '${calorieTracker.date.substring(0, 2)}/${calorieTracker.date.substring(2, 4)}/${calorieTracker.date.substring(4)}',
+                            yValueMapper: (CalorieTracker calorieTracker, _) => calorieTracker.calorie,
+                            dataLabelSettings: DataLabelSettings(isVisible: true),
+                          )
+                        ],
+                      );
+                    }
+                  },
+                ),
+                FutureBuilder(
+                  future: FirebaseService().getFoodDayWise(stateName, districtName, widget.schoolName),
+                  builder: (_, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else {
+                      Pair<List<List<FoodDayWise>>, List<String>> data = snapshot.data as Pair<List<List<FoodDayWise>>, List<String>>;
+                      List<CalorieTracker> calorieTrackerList = [];
+                      for (int i = 0; i < data.a.length; i++) {
+                        double calorie = 0;
+                        double protein = 0;
+                        for (FoodDayWise foodDayWise in data.a.elementAt(i)) {
+                          calorie += foodDayWise.calorie;
+                          protein += foodDayWise.protein;
+                        }
+                        calorieTrackerList.add(CalorieTracker(calorie: calorie, protein: protein, date: data.b.elementAt(i)));
+                      }
+                      return SfCartesianChart(
+                        enableSideBySideSeriesPlacement: true,
+                        primaryXAxis: CategoryAxis(
+                          title: AxisTitle(
+                            text: 'Protein',
+                            textStyle: const TextStyle(
+                              color: ConstantColors.BLACK,
+                            ),
+                          ),
+                        ),
+                        title: ChartTitle(
+                          text: 'Protein Report',
+                          textStyle: const TextStyle(
+                            color: ConstantColors.BLACK,
+                          ),
+                        ),
+                        onDataLabelRender: (DataLabelRenderArgs args) {
+                          args.textStyle = const TextStyle(
+                            color: ConstantColors.BLACK,
+                          );
+                        },
+                        series: <LineSeries<CalorieTracker, String>>[
+                          LineSeries<CalorieTracker, String>(
+                            dataSource: calorieTrackerList,
+                            xValueMapper: (CalorieTracker calorieTracker, _) => '${calorieTracker.date.substring(0, 2)}/${calorieTracker.date.substring(2, 4)}/${calorieTracker.date.substring(4)}',
+                            yValueMapper: (CalorieTracker calorieTracker, _) => calorieTracker.protein,
                             dataLabelSettings: DataLabelSettings(isVisible: true),
                           )
                         ],
