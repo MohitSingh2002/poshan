@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:poshan/constants/constant_colors.dart';
+import 'package:poshan/handlers/auth_handler.dart';
 import 'package:poshan/screens/admin_school_home_screen.dart';
 import 'package:poshan/services/firebase_service.dart';
 import 'package:poshan/services/prefs_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DistrictHomeScreen extends StatefulWidget {
   const DistrictHomeScreen({Key? key}) : super(key: key);
@@ -70,6 +72,18 @@ class _DistrictHomeScreenState extends State<DistrictHomeScreen> {
             }
           },
         ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+              sharedPrefs.clear();
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const AuthHandler()), (Route<dynamic> route) => false);
+            },
+            child: const Text(
+              'Logout',
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
