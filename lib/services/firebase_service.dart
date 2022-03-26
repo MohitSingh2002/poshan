@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:poshan/models/day_attendance.dart';
+import 'package:poshan/models/food_day_wise.dart';
+import 'package:poshan/models/teacher.dart';
 
 class FirebaseService {
   
@@ -46,6 +48,22 @@ class FirebaseService {
       });
       return dayAttendanceList;
     }
+  }
+
+  Future<bool> isTeacherExist(String id, String pin) async {
+    var response = await FirebaseFirestore.instance.collectionGroup('teachers').where('id', isEqualTo: int.parse(id)).where('pin', isEqualTo: pin).limit(1).get();
+    return response.docs.isNotEmpty;
+  }
+
+  Future<Teacher> getTeacher(String id, String pin) async {
+    var response = await FirebaseFirestore.instance.collectionGroup('teachers').where('id', isEqualTo: int.parse(id)).where('pin', isEqualTo: pin).limit(1).get();
+    return Teacher.fromJson(response.docs.elementAt(0).data());
+  }
+
+  void saveFoodsInFirestore(String stateName, String districtName, String schoolName, List<FoodDayWise> foodDayWiseList) async {
+    var response = await FirebaseFirestore.instance.collection('states').doc(stateName).collection('districts').doc(districtName).collection('school').doc(schoolName).collection('meals').doc('26032022').set({
+      'food': List<dynamic>.from(foodDayWiseList.map((x) => x.toJson())),
+    }, SetOptions(merge: true));
   }
   
 }

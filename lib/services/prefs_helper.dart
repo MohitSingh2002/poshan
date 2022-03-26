@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:poshan/models/food_details.dart';
+import 'package:poshan/models/teacher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PrefsHelper {
@@ -63,6 +64,23 @@ class PrefsHelper {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? districtName = await preferences.getString('districtName');
     return districtName == null ? '' : districtName;
+  }
+
+  void saveTeacher(Teacher teacher) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map map = teacher.toJson();
+    String json = jsonEncode(map);
+    prefs.setString('teacher', json);
+  }
+
+  Future<Teacher?> getTeacher() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? teacherFromPrefs = prefs.getString('teacher');
+    if (teacherFromPrefs == null) {
+      return null;
+    } else {
+      return Teacher.fromJson(jsonDecode(teacherFromPrefs));
+    }
   }
 
 }

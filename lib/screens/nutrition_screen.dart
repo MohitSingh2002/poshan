@@ -2,10 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:poshan/constants/constant_colors.dart';
+import 'package:poshan/models/food_day_wise.dart';
 import 'package:poshan/models/food_details.dart';
+import 'package:poshan/models/teacher.dart';
 import 'package:poshan/providers/food_details_provider.dart';
 import 'package:poshan/screens/add_food_screen.dart';
+import 'package:poshan/services/firebase_service.dart';
 import 'package:poshan/services/prefs_helper.dart';
+import 'package:poshan/services/utils.dart';
 import 'package:poshan/widgets/circular_step_progress_indicator.dart';
 import 'package:poshan/widgets/custom_button.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +24,7 @@ class NutritionScreen extends StatefulWidget {
 class _NutritionScreenState extends State<NutritionScreen> {
 
   bool isLoading = false;
+  Teacher? teacher;
 
   @override
   void initState() {
@@ -29,11 +34,13 @@ class _NutritionScreenState extends State<NutritionScreen> {
     });
     PrefsHelper().getParsedList().then((value) {
       value.forEach((element) {
-        print('parsedElement : ${element.toString()}');
         Provider.of<FoodDetailsProvider>(context, listen: false).setFoodDetails(element);
       });
-      setState(() {
-        isLoading = false;
+      PrefsHelper().getTeacher().then((teach) {
+        setState(() {
+          teacher = teach;
+          isLoading = false;
+        });
       });
     });
   }
@@ -46,10 +53,10 @@ class _NutritionScreenState extends State<NutritionScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ConstantColors.WHITE,
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: ConstantColors.BLACK,
         ),
-        title: Text(
+        title: const Text(
           'Nutrition',
           style: TextStyle(
             color: ConstantColors.BLACK,
@@ -78,18 +85,18 @@ class _NutritionScreenState extends State<NutritionScreen> {
                       width: height * 0.06,
                       height: height * 0.06,
                       roundedCap: (_, __) => true,
-                      child: Center(
+                      child: const Center(
                         child: Icon(Icons.food_bank),
                       ),
                     ),
-                    title: Text(
+                    title: const Text(
                       '200 of 700',
                       style: TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    subtitle: Text(
+                    subtitle: const Text(
                       'Cal Eaten',
                     ),
                     trailing: GestureDetector(
@@ -97,9 +104,9 @@ class _NutritionScreenState extends State<NutritionScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AddFoodScreen()));
+                                builder: (context) => const AddFoodScreen()));
                       },
-                      child: Text(
+                      child: const Text(
                         'Add Meal',
                         style: TextStyle(
                           color: ConstantColors.RED,
@@ -113,7 +120,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                 ),
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: context
                       .watch<FoodDetailsProvider>()
                       .getFoodDetails()
@@ -131,8 +138,8 @@ class _NutritionScreenState extends State<NutritionScreen> {
                         children: [
                           ListTile(
                             title: Text(
-                              '${parsed.food.label}',
-                              style: TextStyle(
+                              parsed.food.label,
+                              style: const TextStyle(
                                 color: ConstantColors.BLACK,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -145,7 +152,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                               children: [
                                 Text(
                                   '${parsed.food.nutrients.enercKcal} Cal',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: ConstantColors.BLACK,
                                   ),
                                 ),
@@ -154,7 +161,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                                     PrefsHelper().removeParsedFromList(index);
                                     Provider.of<FoodDetailsProvider>(context, listen: false).removeFoodDetailsAt(index);
                                   },
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.cancel,
                                     color: ConstantColors.RED,
                                   ),
@@ -174,7 +181,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                                 SizedBox(
                                   width: width / 30.0,
                                 ),
-                                Text(
+                                const Text(
                                   'Capture Image',
                                   style: TextStyle(
                                     color: ConstantColors.BLACK,
@@ -196,9 +203,18 @@ class _NutritionScreenState extends State<NutritionScreen> {
                     onTap: () {
                       List<Parsed> parsedList = Provider.of<FoodDetailsProvider>(context, listen: false).getFoodDetails();
                       PrefsHelper().saveParsedList(parsedList);
+                      List<FoodDayWise> foodDayWiseList = [];
                       for (Parsed parsed in parsedList) {
-                        FirebaseFirestore.instance.collection('foodDetails').add(parsed.toJson());
+                        foodDayWiseList.add(FoodDayWise(
+                            name: parsed.food.label,
+                            calorie: parsed.food.nutrients.enercKcal,
+                            protein: parsed.food.nutrients.procnt,
+                            imageFromApi: parsed.food.image,
+                          )
+                        );
                       }
+                      FirebaseService().saveFoodsInFirestore(teacher!.stateName, teacher!.districtName, teacher!.schoolName, foodDayWiseList);
+                      Utils().showToast('Meals Saved Successfully');
                     },
                     text: 'SUBMIT',
                   ),

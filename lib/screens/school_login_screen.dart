@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:poshan/screens/school_home_screen.dart';
+import 'package:poshan/services/firebase_service.dart';
+import 'package:poshan/services/prefs_helper.dart';
 import 'package:poshan/widgets/custom_text_field.dart';
 
 class SchoolLoginScreen extends StatefulWidget {
@@ -13,6 +16,7 @@ class _SchoolLoginScreenState extends State<SchoolLoginScreen> {
   bool isPasswordShown = true;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +25,14 @@ class _SchoolLoginScreenState extends State<SchoolLoginScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'School Login',
         ),
       ),
       body: SafeArea(
-        child: Padding(
+        child: isLoading ? const Center(
+          child: CircularProgressIndicator(),
+        ) : Padding(
           padding: EdgeInsets.all(
             width / 50.0,
           ),
@@ -36,8 +42,8 @@ class _SchoolLoginScreenState extends State<SchoolLoginScreen> {
               children: [
                 AuthTextField(
                   controller: emailController,
-                  hintText: 'Email',
-                  keyboardType: TextInputType.emailAddress,
+                  hintText: 'ID',
+                  keyboardType: TextInputType.number,
                   validator: (value) {},
                 ),
                 SizedBox(
@@ -45,8 +51,8 @@ class _SchoolLoginScreenState extends State<SchoolLoginScreen> {
                 ),
                 AuthTextField(
                   controller: passwordController,
-                  hintText: 'Password',
-                  keyboardType: TextInputType.text,
+                  hintText: 'Pin',
+                  keyboardType: TextInputType.number,
                   obscureText: isPasswordShown,
                   suffixIcon: Padding(
                     padding: const EdgeInsets.only(right: 5.0),
@@ -71,8 +77,25 @@ class _SchoolLoginScreenState extends State<SchoolLoginScreen> {
                   height: width / 10.0,
                 ),
                 ElevatedButton(
-                  onPressed: () {},
-                  child: Text(
+                  onPressed: () {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    FirebaseService().isTeacherExist(emailController.text.toString(), passwordController.text.toString()).then((value) {
+                      if (value) {
+                        FirebaseService().getTeacher(emailController.text.toString(), passwordController.text.toString()).then((teacher) {
+                          PrefsHelper().saveTeacher(teacher);
+                          PrefsHelper().saveAuthCode(4);
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const SchoolHomeScreen()), (Route<dynamic> route) => false);
+                        });
+                      } else {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
+                    });
+                  },
+                  child: const Text(
                     'LOGIN',
                   ),
                 ),

@@ -3,6 +3,7 @@ import 'package:poshan/constants/constant_colors.dart';
 import 'package:poshan/models/food_details.dart';
 import 'package:poshan/providers/food_details_provider.dart';
 import 'package:poshan/services/api_service.dart';
+import 'package:poshan/services/utils.dart';
 import 'package:provider/provider.dart';
 
 class AddFoodScreen extends StatefulWidget {
@@ -141,6 +142,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                                                   context,
                                                   listen: false)
                                               .setFoodDetails(parsed);
+                                          Utils().showToast('Meal Added');
                                         },
                                         icon: const Icon(
                                           Icons.add,

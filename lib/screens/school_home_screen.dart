@@ -3,8 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:poshan/constants/constant_colors.dart';
+import 'package:poshan/models/teacher.dart';
 import 'package:poshan/screens/nutrition_screen.dart';
 import 'package:poshan/screens/school_login_screen.dart';
+import 'package:poshan/services/prefs_helper.dart';
 
 class SchoolHomeScreen extends StatefulWidget {
   const SchoolHomeScreen({Key? key}) : super(key: key);
@@ -44,6 +46,28 @@ class _SchoolHomeScreenState extends State<SchoolHomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              FutureBuilder(
+                future: PrefsHelper().getTeacher(),
+                builder: (_, snapshot) {
+                  Teacher teacher = snapshot.data as Teacher;
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    return Text(
+                      teacher.schoolName,
+                      style: const TextStyle(
+                        color: ConstantColors.BLACK,
+                        fontSize: 25.0,
+                      ),
+                    );
+                  }
+                },
+              ),
+              SizedBox(
+                height: width / 30.0,
+              ),
               DatePicker(
                 DateTime.now(),
                 height: height * 0.15,
